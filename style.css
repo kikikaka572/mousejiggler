@@ -159,4 +159,17 @@ body { font-family: 'Jua', cursive; overflow: hidden; background: #1a4a1a; user-
 @media (pointer: coarse) {
   #mobileCtrl { display: flex; }
   #controls { display: none; }
+
+  /* ── Hidden 클래스 ── */
+.hidden {
+  display: none !important;
+}
+
+#overlay.hidden {
+  display: none !important;
+}
+
+#gameOverBox.hidden {
+  display: none !important;
+}
 }
