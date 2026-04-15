@@ -3,121 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🐰 토끼의 동전 받기</title>
+  <title>마우스 지글러</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="gameContainer">
-  <div id="sky"></div>
-  <div id="moon"></div>
 
-  <svg id="forestBg" viewBox="0 0 1400 600" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
-    <g opacity=".42">
-      <polygon points="80,560 140,340 200,560" fill="#1a3d14"/>
-      <polygon points="70,560 140,380 210,560" fill="#1e4618"/>
-      <rect x="128" y="540" width="24" height="40" fill="#12290e"/>
-      <polygon points="260,560 330,300 400,560" fill="#163312"/>
-      <polygon points="250,560 330,340 410,560" fill="#1a3d14"/>
-      <rect x="318" y="540" width="24" height="40" fill="#0e2009"/>
-      <polygon points="480,560 550,310 620,560" fill="#1e4618"/>
-      <polygon points="470,560 550,360 630,560" fill="#1a3d14"/>
-      <rect x="538" y="540" width="24" height="40" fill="#12290e"/>
-      <polygon points="700,560 770,290 840,560" fill="#163312"/>
-      <polygon points="690,560 770,330 850,560" fill="#1e4618"/>
-      <rect x="758" y="540" width="24" height="40" fill="#0e2009"/>
-      <polygon points="900,560 970,320 1040,560" fill="#1a3d14"/>
-      <polygon points="890,560 970,360 1050,560" fill="#163312"/>
-      <rect x="958" y="540" width="24" height="40" fill="#12290e"/>
-      <polygon points="1120,560 1190,300 1260,560" fill="#1e4618"/>
-      <polygon points="1110,560 1190,345 1270,560" fill="#1a3d14"/>
-      <rect x="1178" y="540" width="24" height="40" fill="#0e2009"/>
-      <polygon points="1310,560 1380,330 1450,560" fill="#163312"/>
-      <polygon points="1300,560 1380,370 1460,560" fill="#1e4618"/>
-      <rect x="1368" y="540" width="24" height="40" fill="#0e2009"/>
-    </g>
-    <g opacity=".88">
-      <polygon points="0,590 70,360 140,590" fill="#2a6020"/>
-      <polygon points="-10,590 70,410 150,590" fill="#347528"/>
-      <rect x="58" y="568" width="24" height="52" fill="#1c3e14"/>
-      <polygon points="170,590 250,330 330,590" fill="#3d8c30"/>
-      <polygon points="160,590 250,380 340,590" fill="#2a6020"/>
-      <rect x="238" y="568" width="24" height="52" fill="#1c3e14"/>
-      <polygon points="370,590 450,350 530,590" fill="#2a6020"/>
-      <polygon points="360,590 450,395 540,590" fill="#347528"/>
-      <rect x="438" y="568" width="24" height="52" fill="#1c3e14"/>
-      <polygon points="600,590 690,310 780,590" fill="#3d8c30"/>
-      <polygon points="590,590 690,360 790,590" fill="#2a6020"/>
-      <rect x="678" y="568" width="24" height="52" fill="#1c3e14"/>
-      <polygon points="830,590 920,340 1010,590" fill="#2a6020"/>
-      <polygon points="820,590 920,390 1020,590" fill="#347528"/>
-      <rect x="908" y="568" width="24" height="52" fill="#1c3e14"/>
-      <polygon points="1060,590 1150,315 1240,590" fill="#3d8c30"/>
-      <polygon points="1050,590 1150,365 1250,590" fill="#2a6020"/>
-      <rect x="1138" y="568" width="24" height="52" fill="#1c3e14"/>
-      <polygon points="1280,590 1360,345 1440,590" fill="#2a6020"/>
-      <polygon points="1270,590 1360,395 1450,590" fill="#347528"/>
-      <rect x="1348" y="568" width="24" height="52" fill="#1c3e14"/>
-    </g>
-    <ellipse cx="150" cy="590" rx="60" ry="22" fill="#2a6020" opacity=".7"/>
-    <ellipse cx="420" cy="590" rx="75" ry="25" fill="#3d8c30" opacity=".6"/>
-    <ellipse cx="750" cy="590" rx="65" ry="22" fill="#2a6020" opacity=".7"/>
-    <ellipse cx="1050" cy="590" rx="70" ry="24" fill="#3d8c30" opacity=".6"/>
-    <ellipse cx="1350" cy="590" rx="60" ry="20" fill="#2a6020" opacity=".7"/>
-  </svg>
+  <div class="scanline"></div>
 
-  <div id="ground"></div>
-  <canvas id="gameCanvas"></canvas>
-
-  <div id="hud">
-    <div class="hud-box">
-      <div class="hud-label">점수</div>
-      <div class="hud-value" id="scoreDisplay">0</div>
+  <div class="container">
+    <div class="header">
+      <div class="header-label">// SYSTEM UTILITY</div>
+      <h1>마우스 <span>지글러</span></h1>
     </div>
-    <div class="hud-box">
-      <div class="hud-label">시간</div>
-      <div class="hud-value" id="timerDisplay">60</div>
-    </div>
-    <div class="hud-box">
-      <div class="hud-label">💣 목숨</div>
-      <div id="lifeBar">
-        <span class="life-heart" id="h0">💚</span>
-        <span class="life-heart" id="h1">💚</span>
-        <span class="life-heart" id="h2">💚</span>
+
+    <div class="card" id="card">
+      <div class="status-row">
+        <div class="status-badge">
+          <div class="dot" id="dot"></div>
+          <span class="status-text" id="statusText">대기 중</span>
+        </div>
+        <div class="uptime" id="uptime">00:00:00</div>
+      </div>
+
+      <div class="toggle-wrap">
+        <button class="toggle-btn" id="mainBtn" title="클릭하여 시작/정지 (Space)"></button>
+      </div>
+
+      <div class="settings">
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label">작동 간격</div>
+            <div class="setting-sub">마우스 이동 주기</div>
+          </div>
+          <div class="interval-wrap">
+            <input type="range" id="intervalSlider" min="10" max="60" value="30" step="5">
+            <div class="interval-val" id="intervalVal">30초</div>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label">비가시 모드</div>
+            <div class="setting-sub">최소 픽셀로 이동 (권장)</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="stealthMode" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label">Wake Lock</div>
+            <div class="setting-sub">화면 절전 방지 (지원 시)</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="wakeLock">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="log-wrap">
+        <div class="log-title">ACTIVITY LOG</div>
+        <div class="log-entries" id="logEntries">
+          <div class="log-entry">— 대기 중...</div>
+        </div>
       </div>
     </div>
-    <div class="hud-box">
-      <div class="hud-label">최고기록</div>
-      <div class="hud-value" id="bestDisplay">0</div>
+
+    <div class="footer-note">
+      브라우저에서 실행 · 설치 불필요<br>
+      <strong>Chrome / Edge</strong> 전체화면으로 사용 시 최적
     </div>
   </div>
 
-  <div id="controls">
-    <span class="ctrl-key">← → 이동</span>
-    <span class="ctrl-key">🪙 동전 받기 &nbsp;|&nbsp; 💣 폭탄 3번 = 게임오버</span>
-  </div>
-
-  <div id="bombFlash"></div>
-
-  <div id="mobileCtrl">
-    <div class="mob-btn" id="mobLeft">◀</div>
-    <div class="mob-btn" id="mobRight">▶</div>
-  </div>
-
-  <div id="overlay">
-    <h1>🐰 토끼의 동전 받기</h1>
-    <p>바구니로 동전을 받아 점수를 올리세요!</p>
-    <p class="sub">💣 폭탄을 3번 받으면 게임 오버!</p>
-    <button class="main-btn" id="startBtn">게임 시작!</button>
-  </div>
-
-  <div id="gameOverBox">
-    <h2>💥 게임 종료!</h2>
-    <div class="go-score" id="goScore"></div>
-    <div class="go-best" id="goBest"></div>
-    <button class="main-btn" id="restartBtn">다시 하기 🎮</button>
-  </div>
-</div>
-
-<script src="game.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
