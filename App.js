@@ -6,6 +6,7 @@
 
 // ── DOM refs ─────────────────────────────────────────────────
 const btn = document.getElementById('mainBtn');
+const btnIcon = btn.querySelector('.btn-icon');
 const dot = document.getElementById('dot');
 const statusText = document.getElementById('statusText');
 const uptimeEl = document.getElementById('uptime');
@@ -23,31 +24,25 @@ let uptimeTimer = null;
 let startTime = null;
 let wakeLockObj = null;
 let moveCount = 0;
-let direction = 1; // alternates +1 / -1 for natural movement
+let direction = 1;
 
 // ── Helpers ───────────────────────────────────────────────────
 
-/** Format milliseconds → HH:MM:SS */
 function formatUptime(ms) {
   const totalSec = Math.floor(ms / 1000);
   const h = String(Math.floor(totalSec / 3600)).padStart(2, '0');
   const m = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
   const sec = String(totalSec % 60).padStart(2, '0');
-  return `${h}:${m}:${sec}`;
+  return h + ':' + m + ':' + sec;
 }
 
-/** Prepend a timestamped entry to the activity log (max 3 lines). */
 function addLog(msg) {
   const time = new Date().toLocaleTimeString('ko-KR', { hour12: false });
   const entry = document.createElement('div');
   entry.className = 'log-entry new';
-  entry.textContent = `[${time}] ${msg}`;
+  entry.textContent = '[' + time + '] ' + msg;
   logEntries.insertBefore(entry, logEntries.firstChild);
-
-  // Remove highlight after animation
   setTimeout(() => entry.classList.remove('new'), 400);
-
-  // Keep at most 3 entries visible
   while (logEntries.children.length > 3) {
     logEntries.removeChild(logEntries.lastChild);
   }
@@ -64,12 +59,9 @@ async function requestWakeLock() {
   try {
     wakeLockObj = await navigator.wakeLock.request('screen');
     addLog('Wake Lock 활성화');
-    // Re-acquire on page becoming visible again
-    wakeLockObj.addEventListener('release', () => {
-      wakeLockObj = null;
-    });
+    wakeLockObj.addEventListener('release', () => { wakeLockObj = null; });
   } catch (err) {
-    addLog(`Wake Lock 실패: ${err.message}`);
+    addLog('Wake Lock 실패: ' + err.message);
     wakeLockToggle.checked = false;
   }
 }
@@ -84,20 +76,11 @@ async function releaseWakeLock() {
 
 // ── Core Jiggle ───────────────────────────────────────────────
 
-/**
- * Sends a synthetic mousemove event and pings the window to
- * prevent browser/OS idle detection and Slack/Teams away status.
- *
- * True OS-level cursor movement requires a native app; this
- * browser approach is sufficient for most enterprise presence tools.
- */
 function doJiggle() {
   moveCount++;
-  direction *= -1; // alternate direction each tick
-
+  direction *= -1;
   const px = stealthMode.checked ? direction : direction * 3;
 
-  // Synthetic mousemove
   document.dispatchEvent(new MouseEvent('mousemove', {
     bubbles: true,
     cancelable: true,
@@ -105,13 +88,9 @@ function doJiggle() {
     clientY: window.innerHeight / 2 + px,
   }));
 
-  // Keep window focused / active
   window.focus();
-
-  // Update tab title so the OS doesn't treat it as idle
-  document.title = `● 지글러 작동 중 (${moveCount})`;
-
-  addLog(`신호 전송 #${moveCount} (${px > 0 ? '+' : ''}${px}px)`);
+  document.title = '● 지글러 작동 중 (' + moveCount + ')';
+  addLog('신호 전송 #' + moveCount + ' (' + (px > 0 ? '+' : '') + px + 'px)');
 }
 
 // ── Start / Stop ──────────────────────────────────────────────
@@ -128,21 +107,19 @@ function stopJiggle() {
 
 async function toggleRunning() {
   if (!running) {
-    /* ── START ── */
     running = true;
     moveCount = 0;
     startTime = Date.now();
 
     btn.classList.add('on');
+    btnIcon.textContent = '\u23F9';
     dot.classList.add('on');
     statusText.textContent = '작동 중';
     statusText.classList.add('on');
     card.classList.add('active');
 
     addLog('지글러 시작됨');
-
     if (wakeLockToggle.checked) await requestWakeLock();
-
     startJiggle();
 
     uptimeTimer = setInterval(() => {
@@ -150,7 +127,6 @@ async function toggleRunning() {
     }, 1000);
 
   } else {
-    /* ── STOP ── */
     running = false;
 
     stopJiggle();
@@ -159,51 +135,46 @@ async function toggleRunning() {
     uptimeEl.textContent = '00:00:00';
 
     btn.classList.remove('on');
+    btnIcon.textContent = '\u25B6';
     dot.classList.remove('on');
     statusText.textContent = '대기 중';
     statusText.classList.remove('on');
     card.classList.remove('active');
 
     document.title = '마우스 지글러';
-
     await releaseWakeLock();
-
-    addLog(`중지됨 — 총 ${moveCount}회 신호 전송`);
+    addLog('중지됨 — 총 ' + moveCount + '회 신호 전송');
   }
 }
 
 // ── Event Listeners ───────────────────────────────────────────
 
+// 클릭
 btn.addEventListener('click', toggleRunning);
 
-// Space key shortcut
-document.addEventListener('keydown', (e) => {
-  if (e.code === 'Space' && e.target === document.body) {
-    e.preventDefault();
-    toggleRunning();
-  }
+// 스페이스바 — input/textarea 포커스 중엔 제외, 나머지 어디서든 동작
+document.addEventListener('keydown', function(e) {
+  if (e.code !== 'Space') return;
+  const tag = document.activeElement.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+  e.preventDefault();
+  toggleRunning();
 });
 
-// Interval slider
-intervalSlider.addEventListener('input', () => {
-  intervalVal.textContent = `${intervalSlider.value}초`;
-  if (running) {
-    stopJiggle();
-    startJiggle();
-  }
+// 슬라이더
+intervalSlider.addEventListener('input', function() {
+  intervalVal.textContent = intervalSlider.value + '초';
+  if (running) { stopJiggle(); startJiggle(); }
 });
 
-// Wake Lock toggle
-wakeLockToggle.addEventListener('change', async () => {
-  if (wakeLockToggle.checked && running) {
-    await requestWakeLock();
-  } else {
-    await releaseWakeLock();
-  }
+// Wake Lock 토글
+wakeLockToggle.addEventListener('change', async function() {
+  if (wakeLockToggle.checked && running) await requestWakeLock();
+  else await releaseWakeLock();
 });
 
-// Re-acquire Wake Lock when tab regains visibility
-document.addEventListener('visibilitychange', async () => {
+// 탭 복귀 시 Wake Lock 재취득
+document.addEventListener('visibilitychange', async function() {
   if (
     document.visibilityState === 'visible' &&
     running &&
