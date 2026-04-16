@@ -182,32 +182,19 @@ body::before {
   border: 2px solid var(--border);
   background: transparent;
   cursor: pointer;
-  position: relative;
-  transition: all 0.3s ease;
-  outline: none;
-}
-
-.toggle-btn::before {
-  content: '';
-  position: absolute;
-  inset: 6px;
-  border-radius: 50%;
-  border: 1px solid var(--dim);
-  transition: all 0.3s;
-  pointer-events: none;
-}
-
-.toggle-btn::after {
-  content: '▶';
-  position: absolute;
-  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.btn-icon {
   font-size: 28px;
   color: var(--dim);
-  transition: all 0.3s;
-  pointer-events: none;
+  transition: color 0.3s;
+  line-height: 1;
 }
 
 .toggle-btn.on {
@@ -215,22 +202,25 @@ body::before {
   box-shadow: var(--glow), inset 0 0 30px rgba(0, 255, 136, 0.05);
 }
 
-.toggle-btn.on::before {
-  border-color: var(--accent);
-  box-shadow: 0 0 12px rgba(0, 255, 136, 0.2);
-}
-
-.toggle-btn.on::after {
-  content: '⏹';
+.toggle-btn.on .btn-icon {
   color: var(--accent);
 }
 
-.toggle-btn:hover:not(.on)::after {
+.toggle-btn:hover .btn-icon {
   color: var(--text);
 }
 
-.toggle-btn:hover.on {
-  box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+.toggle-btn:hover.on .btn-icon {
+  color: var(--accent);
+}
+
+.key-hint {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--dim);
+  letter-spacing: 2px;
+  margin-top: 10px;
+  text-align: center;
 }
 
 /* ── Settings ─────────────────────────────────────────────── */
